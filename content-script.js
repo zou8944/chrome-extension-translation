@@ -13,6 +13,7 @@ let openaiKey = ""
 // 接收来自 service-worker 的消息，渲染弹出框
 chrome.runtime.onMessage.addListener(async function (request, sender, sendResponse) {
     if (request.action === "translate-selected") {
+        openaiKey = (await chrome.storage.sync.get(["openaiKey"])).openaiKey
         // get current selection text and it's parent node
         await translateSelectedText()
     }
@@ -185,7 +186,11 @@ async function addMessage(isSelf, message) {
     dialogContent.scrollTop = dialogContent.scrollHeight;
     if (isSelf) {
         // 如果是我们自己发送的消息，还要异步调用chat接口获得机器人消息
-        await askChatGPT(message)
+        if (openaiKey) {
+            await askChatGPT(message)
+        } else {
+            await addMessage(false, "您还没有设置OpenAI的API Key，请点击插件图标进行设置")
+        }
     }
 }
 

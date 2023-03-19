@@ -2,40 +2,14 @@
 <html lang="zh">
 <head>
     <meta charset="utf-8">
-    <title>划词翻译</title>
-    <style>
-        #translation-box {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            width: 300px;
-            height: auto;
-            background-color: white;
-            border: 1px solid #CCC;
-            padding: 20px;
-            z-index: 99999;
-        }
-
-        #translation-box h2 {
-            margin: 0;
-            font-size: 16px;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 10px;
-        }
-
-        #translation-box p {
-            margin: 0;
-            font-size: 14px;
-            color: #666;
-            line-height: 24px;
-        }
-    </style>
+    <title>GPT译</title>
+    <link rel="stylesheet" type="text/css" href="popup.css"/>
 </head>
 <body>
-<div id="translation-box">
-    <h2>翻译结果</h2>
-    <p id="translation-text"></p>
+<h1>GPT译</h1>
+<input id="textInput" type="text" size="30" placeholder="输入 openai api key" disabled>
+<div>
+    <button id="editButton">编辑</button>
 </div>
 <script src="popup.js"></script>
 </body>
