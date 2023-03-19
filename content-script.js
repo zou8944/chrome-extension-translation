@@ -1,8 +1,14 @@
 // 整一个消息缓存列表
-let messageCache = []
+let messageCache = [
+    {
+        "role": "system",
+        "content": "You are ChatGPT, a large language model trained by OpenAI. Answer as concisely as possible. Knowledge cutoff: {knowledge_cutoff} Current date: {current_date}"
+    },
+]
 let isDragging = false;
 let offset = {x: 0, y: 0};
 let isDialogShow = false
+let openaiKey = ""
 
 // 接收来自 service-worker 的消息，渲染弹出框
 chrome.runtime.onMessage.addListener(async function (request, sender, sendResponse) {
@@ -23,7 +29,7 @@ async function translateSelectedText() {
     // 重置对话框的各种事件
     await resetDialogAction()
     // 添加初始消息
-    addMessage(false, promptText)
+    await addMessage(true, promptText)
 }
 
 function getSelectedText() {
@@ -158,7 +164,7 @@ async function resetDialogAction() {
 }
 
 // 添加消息到对话框
-function addMessage(isSelf, message) {
+async function addMessage(isSelf, message) {
     // 创建如下结构的元素
     // <div className="message">
     //     <div className="other">你好</div>
@@ -166,7 +172,7 @@ function addMessage(isSelf, message) {
     let messageDiv = document.createElement('div');
     messageDiv.className = 'message';
     let messageContent = document.createElement('div');
-    messageContent.innerHTML = message.replace("\n", "<br>");
+    messageContent.innerHTML = message
     messageDiv.appendChild(messageContent);
     if (isSelf) {
         messageContent.classList.add('self');
@@ -179,13 +185,30 @@ function addMessage(isSelf, message) {
     dialogContent.scrollTop = dialogContent.scrollHeight;
     if (isSelf) {
         // 如果是我们自己发送的消息，还要异步调用chat接口获得机器人消息
-        askChatGPT()
+        await askChatGPT(message)
     }
 }
 
-function askChatGPT() {
-    let result = "我是响应结果"
-    addMessage(false, result)
+async function askChatGPT(message) {
+    messageCache.push({
+        "role": "user",
+        "content": message
+    })
+    let chatResponse = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${openaiKey}`
+        },
+        body: JSON.stringify({
+            "model": "gpt-3.5-turbo",
+            "messages": messageCache,
+        })
+    })
+    let chatResult = await chatResponse.json()
+    console.log(chatResult)
+    messageCache.push(chatResult.choices[0].message)
+    await addMessage(false, chatResult.choices[0].message.content)
 }
 
 function getElementInDialog(id) {
