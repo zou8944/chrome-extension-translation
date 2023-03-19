@@ -7,9 +7,26 @@
     "default_popup": "./popup/popup.html",
     "default_title": "选中文本，单击右键，选择“划词翻译”即可翻译。"
   },
-  "permissions": ["contextMenus", "activeTab"],
-  "host_permissions": ["https://fanyi.baidu.com/*"],
+  "permissions": [
+    "tabs",
+    "background",
+    "contextMenus",
+    "activeTab",
+    "scripting"
+  ],
   "background": {
-    "service_worker": "service_worker.js"
-  }
+    "service_worker": "service-worker.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*/*"],
+      "js": ["content-script.js"]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [ "translation/dialog.css", "translation/dialog.html", "translation/dialog.js"],
+      "matches": [ "https://*/*" ]
+    }
+  ]
 }
