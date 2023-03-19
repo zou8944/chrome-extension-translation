@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "name": "划词翻译",
+  "version": "1.0",
+  "description": "划词翻译",
+  "action": {
+    "default_popup": "./popup/popup.html",
+    "default_title": "选中文本，单击右键，选择“划词翻译”即可翻译。"
+  },
+  "permissions": ["contextMenus", "activeTab"],
+  "host_permissions": ["https://fanyi.baidu.com/*"],
+  "background": {
+    "service_worker": "service_worker.js"
+  }
+}
