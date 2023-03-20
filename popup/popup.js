@@ -15,3 +15,9 @@ async function editButtonClicked() {
 
 // 为editButton添加点击事件
 document.getElementById("editButton").onclick = editButtonClicked;
+chrome.storage.sync.get(['openaiKey'], (result) => {
+    let textInput = document.getElementById('textInput');
+    if (result.openaiKey) {
+        textInput.value = result.openaiKey;
+    }
+})

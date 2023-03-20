@@ -106,18 +106,13 @@ async function removeChatDialogElement() {
 
 async function resetDialogPosition() {
     let selection = window.getSelection();
-    if (selection.rangeCount) {
-        let rect = undefined
-        let range = selection.getRangeAt(0);
-        let rects = range.getClientRects();
-        if (rects.length > 0) {
-            rect = rects[0];
-            let dialog = getElementInDialog("dialog-container")
-            if (dialog && rect) {
-                dialog.style.left = rect.left + rect.width + 10 + "px"
-                dialog.style.top = rect.top + rect.height + 10 + "px"
-            }
-        }
+    let range = selection.getRangeAt(0)
+    let rect = range.getBoundingClientRect()
+    let bodyRect = document.body.getBoundingClientRect()
+    let dialog = getElementInDialog("dialog-container")
+    if (dialog && rect) {
+        dialog.style.left = rect.left + rect.width - bodyRect.left + 10 + "px"
+        dialog.style.top = rect.top + rect.height - bodyRect.top + 10 + "px"
     }
 }
 
